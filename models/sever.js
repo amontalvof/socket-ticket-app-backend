@@ -15,7 +15,11 @@ class Server {
         this.app = express();
         this.server = http.createServer(this.app);
         this.io = socketIo(this.server, {
-            /** configurations */
+            cors: {
+                origin: 'http://localhost:3000',
+                methods: ['GET', 'POST'],
+                credentials: true,
+            },
         });
     }
 
