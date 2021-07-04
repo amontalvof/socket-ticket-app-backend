@@ -21,6 +21,8 @@ class Server {
                 credentials: true,
             },
         });
+        // Initialize Sockets
+        this.sockets = new Sockets(this.io);
     }
 
     middlewares() {
@@ -28,17 +30,18 @@ class Server {
         this.app.use(express.static(path.resolve(__dirname, '../public')));
         // CORS
         this.app.use(cors());
-    }
-
-    socketsConfiguration() {
-        new Sockets(this.io);
+        // GET last tickets
+        this.app.get('/lastTickets', (req, res) => {
+            res.json({
+                ok: true,
+                lastTickets: this.sockets.ticketList.last13,
+            });
+        });
     }
 
     execute() {
         //Initialize Middlewares
         this.middlewares();
-        // Initialize Sockets
-        this.socketsConfiguration();
         //Initialize Server
         this.server.listen(this.port, () => {
             console.log(colors.cyan(`Server running on port ${this.port}`));
